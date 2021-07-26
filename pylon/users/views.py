@@ -1,45 +1,49 @@
+import copy
+
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, RedirectView, UpdateView
+
+from rest_framework.response import Response
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from .serializers import (
+    UserCreateSerializer,
+    UserSerializer,
+)
+
+from .utils import (
+    user_exists,
+)
 
 User = get_user_model()
 
+class UserCreateView(APIView):
+    permission_classes = [AllowAny]
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+    def post(self, request):
 
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
+        if user_exists(request.data['email']):
+            return Response(
+                {'error': 'Email is already in use'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
+        data = copy.deepcopy(request.data)
+        serializer = UserCreateSerializer(data=data)
 
-user_detail_view = UserDetailView.as_view()
-
-
-class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-
-    model = User
-    fields = ["name"]
-    success_message = _("Information successfully updated")
-
-    def get_success_url(self):
-        return self.request.user.get_absolute_url()  # type: ignore [union-attr]
-
-    def get_object(self):
-        return self.request.user
-
-
-user_update_view = UserUpdateView.as_view()
-
-
-class UserRedirectView(LoginRequiredMixin, RedirectView):
-
-    permanent = False
-
-    def get_redirect_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
-
-
-user_redirect_view = UserRedirectView.as_view()
+        if serializer.is_valid():
+            user = serializer.save()
+            # token = TokenObtainPairSerializer(user).validate(UserSerializer(user).data)
+            # token['user'] = UserSerializer(user).data
+            return Response(
+                UserSerializer(user).data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
