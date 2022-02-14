@@ -78,6 +78,8 @@ LOCAL_APPS = [
     "pylon.users.apps.UsersConfig",
     # Your stuff: custom apps go here
     "pylon.inventory.apps.InventoryConfig",
+    "pylon.quotations.apps.QuotationsConfig",
+    "pylon.customers.apps.CustomersConfig",
     "pylon.vendors.apps.VendorsConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -137,6 +139,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "pylon.core.middleware.CurrentUserMiddleware",
 ]
 
 # STATIC
@@ -320,3 +323,12 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=30),
     'AUTH_HEADER_TYPES': ('JWT',)
 }
+
+# CELERYBEAT_SCHEDULE = {
+#     # Executes every Monday at midnight
+#     'do-task-every-monday': {
+#         'task': 'setup_periodic_tasks',
+#         'schedule': 3,
+#         'args': (),
+#     },
+# }

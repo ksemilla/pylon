@@ -13,5 +13,14 @@ app = Celery("pylon")
 #   should have a `CELERY_` prefix.
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
+app.conf.beat_schedule = {
+    # Executes every Monday at midnight
+    # 'do-task-every-monday': {
+    #     'task': 'pylon.quotations.tasks.test',
+    #     'schedule': 3,
+    #     'args': ("test",),
+    # },
+}
+
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()

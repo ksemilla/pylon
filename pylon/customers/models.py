@@ -3,25 +3,20 @@ from django.utils.translation import gettext_lazy as _
 
 from pylon.core.models import StampedModel
 
-class Vendor(StampedModel):
-    class Status(models.TextChoices):
-        ACTIVE = 'a', _('Active')
-        INACTIVE = 'i', _('Inactive')
-
-    status = models.CharField(max_length=64, choices=Status.choices, default=Status.ACTIVE)
+class Customer(StampedModel):
+    name = models.CharField(max_length=256)
     code = models.CharField(max_length=32)
-    name = models.CharField(max_length=128)
-    email = models.EmailField(max_length=128, blank=True)
     phone = models.CharField(max_length=128, blank=True)
-
-    class Meta:
-        ordering = ['code']
-
+    website = models.CharField(max_length=128, blank=True)
+    email = models.EmailField(max_length=128, blank=True)
+    discount = models.DecimalField(max_digits=7, decimal_places=2, default=0, blank=True, null=True)
+    credit = models.DecimalField(max_digits=32, decimal_places=2, default=0, blank=True, null=True)
+    
     def __str__(self):
-        return self.name
+        return f"{self.name}"
 
-class VendorContact(StampedModel):
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, blank=True, null=True)
+class CustomerContact(StampedModel):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     phone = models.CharField(max_length=128, blank=True)
     email = models.EmailField(blank=True)
@@ -29,8 +24,8 @@ class VendorContact(StampedModel):
     def __str__(self):
         return f"{self.name}"
 
-class VendorAddress(StampedModel):
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, blank=True, null=True)
+class CustomerAddress(StampedModel):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     is_primary = models.BooleanField(default=False)
     address1 = models.CharField(max_length=200)
     address2 = models.CharField(max_length=200, blank=True)

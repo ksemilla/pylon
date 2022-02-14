@@ -23,5 +23,5 @@ class VendorAdmin(admin.ModelAdmin):
     readonly_fields = ['id']
 
 admin.site.register(Vendor, VendorAdmin)
-# admin.site.register(VendorContact)
-# admin.site.register(VendorAddress)
+admin.site.register(VendorContact)
+admin.site.register(VendorAddress)

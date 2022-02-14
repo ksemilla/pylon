@@ -1,0 +1,19 @@
+name: Pylon Deploy
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: SSH connect
+    runs-on: ubuntu-latest
+    steps:
+      - name: exeecuting remote ssh commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.PYLON_HOST }}
+        username: ${{ secrets.PYLON_USERNAME }}
+        port: ${{ secrets.PYLON_PORT }}
+        script: whoami

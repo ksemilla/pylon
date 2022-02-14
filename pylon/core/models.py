@@ -19,7 +19,9 @@ class StampedModel(TimeStampedModel):
         on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
+        
         user = get_current_user()
+        
         if user:
             self.modified_by = user
             if not self.id:

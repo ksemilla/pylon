@@ -22,6 +22,8 @@ urlpatterns = [
     path("api/token/", include("pylon.login.urls")),
 
     path('api/inventory/', include("pylon.inventory.urls")),
+    path('api/quotations/', include("pylon.quotations.urls")),
+    path('api/customers/', include("pylon.customers.urls")),
     path('api/vendors/', include("pylon.vendors.urls")),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
