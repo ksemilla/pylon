@@ -17,4 +17,6 @@ jobs:
         username: ${{ secrets.PYLON_USERNAME }}
         key: ${{ secrets.PYLON_KEY }}
         port: ${{ secrets.PYLON_PORT }}
-        script: whoami
+        script: |
+          whoami
+          ls
