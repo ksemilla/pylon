@@ -18,5 +18,6 @@ jobs:
         key: ${{ secrets.PYLON_KEY }}
         port: ${{ secrets.PYLON_PORT }}
         script: |
-          whoami
-          ls
+          cd pylon
+          git pull
+          
