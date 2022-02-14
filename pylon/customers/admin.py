@@ -7,4 +7,4 @@ from .models import (
     CustomerContact
 )
 
-admin.site.register(Customer)
+# admin.site.register(Customer)
