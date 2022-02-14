@@ -20,5 +20,8 @@ jobs:
         script: |
           cd pylon
           git pull
-          workon pylon
-          pip install -r requirements/local.txt
+          PCID=$(docker ps | awk ' /pylon_web/ { print $1 }')
+          docker exec -it $PCID python3 manage.py migrate
+          docker-compose pull
+          docker-compose up --detach
+          docker image prune
