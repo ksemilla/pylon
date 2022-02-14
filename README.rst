@@ -1,7 +1,7 @@
 pylon
 =====
 
-Attempt to create an ERP
+Attempt to create an ERP1
 
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter
      :target: https://github.com/pydanny/cookiecutter-django/
