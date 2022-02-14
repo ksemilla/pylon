@@ -20,4 +20,5 @@ jobs:
         script: |
           cd pylon
           git pull
-          
+          workon pylon
+          pip install -r requirements/local.txt
