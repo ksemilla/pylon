@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay
-from django.contrib.auth.models import User
+from django.conf import settings
 from core.middlewares import get_current_user
 
 
@@ -9,10 +9,18 @@ class StampedModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, blank=True, null=True
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="created_%(class)s",
     )
     updated_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, blank=True, null=True
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="updated_%(class)s",
     )
 
     def save(self, *args, **kwargs):
@@ -30,20 +38,20 @@ class StampedModel(models.Model):
         indexes = [
             # Index for the year extracted from `created_at`
             models.Index(
-                name="idx_created_year",
+                ExtractYear("created_at"),
                 fields=[],
-                expressions=[ExtractYear("created_at")],
+                name="idx_created_year",
             ),
             # Index for the month extracted from `created_at`
             models.Index(
-                name="idx_created_month",
+                ExtractMonth("created_at"),
                 fields=[],
-                expressions=[ExtractMonth("created_at")],
+                name="idx_created_month",
             ),
             # Index for the day extracted from `created_at`
             models.Index(
-                name="idx_created_day",
+                ExtractDay("created_at"),
                 fields=[],
-                expressions=[ExtractDay("created_at")],
+                name="idx_created_day",
             ),
         ]
