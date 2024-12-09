@@ -17,10 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-
-from auth.views import auth_api
+from core.urls import api
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/auth/", auth_api.urls),
+    path("api/", api.urls),
 ]
