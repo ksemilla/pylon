@@ -7,7 +7,7 @@ from auth.authentication import get_encoded_token, verify_token
 auth_router = Router()
 
 
-@auth_router.post("")
+@auth_router.post("", auth=None)
 def get_token_view(request, data: GetTokenSchema):
     googleUser = auth.verify_id_token(data.access_token)
     return {
@@ -17,6 +17,6 @@ def get_token_view(request, data: GetTokenSchema):
     }
 
 
-@auth_router.post("verify/")
+@auth_router.post("verify/", auth=None)
 def verify_token_view(request, data: VerifyTokenSchema):
     return verify_token(data.token)

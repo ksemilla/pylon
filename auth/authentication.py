@@ -2,6 +2,7 @@ import jwt
 from django.conf import settings
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import User
+from ninja.security import HttpBearer
 
 
 def get_encoded_token(payload):
@@ -12,22 +13,12 @@ def verify_token(token):
     return jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
 
 
-class CustomAuthentication(BaseBackend):
-    def authenticate(self, request, **kwargs):
+class CustomAuthentication(HttpBearer):
+    def authenticate(self, request, token):
         try:
-            decoded = verify_token(request.data["token"])
-        except:
-            return None
-
-        try:
-            user = User.objects.get(email=decoded["email"])
-        except User.DoesNotExist:
-            return None
-
-        return user
-
-    def get_user(self, user_id):
-        try:
-            return User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            return None
+            jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
+            return True
+        except jwt.exceptions.DecodeError:
+            return False
+        except Exception as e:
+            return False

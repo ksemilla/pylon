@@ -158,4 +158,3 @@ CORS_ALLOWED_ORIGINS = [
 
 # CUSTOMS
 AUTH_USER_MODEL = "users.User"
-AUTHENTICATION_BACKENDS = "auth.authentication.CustomAuthentication"
