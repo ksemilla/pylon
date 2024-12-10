@@ -10,5 +10,5 @@ class User(AbstractUser):
         USER = "user", _("User")
 
     firebase_uid = models.CharField(max_length=256)
-    picture = models.CharField(max_length=512, blank=True)
+    picture = models.CharField(max_length=512, blank=True, null=True)
     role = models.CharField(max_length=64, choices=Roles, default=Roles.USER)

@@ -1,5 +1,10 @@
 from ninja import Router
+from ninja.errors import HttpError
 from firebase_admin import auth
+from firebase_admin._auth_utils import (
+    EmailAlreadyExistsError,
+    EmailNotFoundError,
+)
 
 from users.schemas import UserCreateGoogleSchema, UserSchema, UserCreateSchema
 from users.models import User
@@ -30,7 +35,12 @@ def verify_token_view(request, data: VerifyTokenSchema):
 
 @auth_router.post("sign-up/", auth=None, response=UserSchema)
 def sign_up_view(request, data: UserCreateSchema):
-    firebase_user = auth.create_user(email=data.email, password=data.password)
+    try:
+        firebase_user = auth.create_user(
+            email=data.email, password=data.password
+        )
+    except EmailAlreadyExistsError:
+        raise HttpError(400, "Email already exists")
     return User.objects.create(
         email=firebase_user.email,
         picture=firebase_user.photo_url,
