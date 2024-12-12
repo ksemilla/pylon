@@ -1,11 +1,10 @@
-from ninja import Router
-from ninja.pagination import paginate
+from ninja.pagination import RouterPaginated
 from typing import List
 
 from .models import Entity
 from .schemas import EntitySchema
 
-entity_router = Router()
+entity_router = RouterPaginated()
 
 
 @entity_router.get("", response=List[EntitySchema])

@@ -5,5 +5,5 @@ class GetTokenSchema(Schema):
     access_token: str
 
 
-class VerifyTokenSchema(Schema):
+class TokenResponseSchema(Schema):
     token: str
