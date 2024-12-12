@@ -1,7 +1,5 @@
 import jwt
 from django.conf import settings
-from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.models import User
 from ninja.security import HttpBearer
 
 
@@ -20,5 +18,5 @@ class CustomAuthentication(HttpBearer):
             return True
         except jwt.exceptions.DecodeError:
             return False
-        except Exception as e:
+        except Exception:
             return False
