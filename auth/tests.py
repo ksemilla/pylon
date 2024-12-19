@@ -60,6 +60,33 @@ class GoogleLoginTest(TestCase):
         self.assertContains(response, "token")
 
 
+class VerifyTokenTest(TestCase):
+    path: str = "verify/"
+
+    def test_verify_token_fail_1(self):
+        client = TestClient(auth_router)
+        response = client.post(self.path, json.dumps({"key": "value"}))
+
+        self.assertEqual(response.status_code, 422)
+        self.assertIn("detail", response.data)
+
+    def test_verify_token_fail_2(self):
+        client = TestClient(auth_router)
+        response = client.post(self.path, json.dumps({"token": "value"}))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("detail", response.data)
+
+    @patch("auth.views.verify_token")
+    def test_verify_token_success(self, mock_verify_token):
+        mock_verify_token.return_value = {"userId": 1}
+        client = TestClient(auth_router)
+        response = client.post(self.path, json.dumps({"token": "value"}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "userId")
+
+
 class GoogleSignupTest(TestCase):
     path: str = "google-sign-up/"
 

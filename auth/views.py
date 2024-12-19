@@ -5,11 +5,16 @@ from firebase_admin._auth_utils import (
     EmailAlreadyExistsError,
     InvalidIdTokenError,
 )
+from jwt.exceptions import InvalidSignatureError, DecodeError
 
 from users.schemas import UserCreateGoogleSchema, UserCreateSchema
 from users.models import User
 
-from .schemas import GetTokenSchema, TokenResponseSchema
+from .schemas import (
+    GetTokenSchema,
+    TokenResponseSchema,
+    VerifyTokenResponseSchema,
+)
 from .authentication import get_encoded_token, verify_token
 
 auth_router = Router()
@@ -30,9 +35,17 @@ def get_token_view(request, data: GetTokenSchema):
     return {"token": get_encoded_token({"userId": user.pk})}
 
 
-@auth_router.post("verify/", auth=None)
+@auth_router.post(
+    "verify/", auth=None, response={200: VerifyTokenResponseSchema}
+)
 def verify_token_view(request, data: TokenResponseSchema):
-    return verify_token(data.token)
+    try:
+        res = verify_token(data.token)
+    except InvalidSignatureError:
+        raise HttpError(400, "Invalid token")
+    except DecodeError:
+        raise HttpError(400, "Invalid token")
+    return res
 
 
 @auth_router.post("sign-up/", auth=None, response={201: TokenResponseSchema})
