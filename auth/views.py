@@ -1,12 +1,9 @@
 from ninja import Router
 from ninja.errors import HttpError
 from firebase_admin import auth
-from firebase_admin._auth_utils import (
-    EmailAlreadyExistsError,
-    EmailNotFoundError,
-)
+from firebase_admin._auth_utils import EmailAlreadyExistsError
 
-from users.schemas import UserCreateGoogleSchema, UserSchema, UserCreateSchema
+from users.schemas import UserCreateGoogleSchema, UserCreateSchema
 from users.models import User
 
 from .schemas import GetTokenSchema, TokenResponseSchema
