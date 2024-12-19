@@ -7,3 +7,7 @@ class GetTokenSchema(Schema):
 
 class TokenResponseSchema(Schema):
     token: str
+
+
+class VerifyTokenResponseSchema(Schema):
+    userId: int
