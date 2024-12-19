@@ -135,13 +135,7 @@ class GoogleSignupTest(TestCase):
         response = client.post(self.path, json.dumps({"key": "value"}))
         self.assertEqual(response.status_code, 422)
 
-    @patch("auth.views.auth.verify_id_token")
-    def test_create_user_google_invalid_token(self, mock_verify_token):
-        mock_verify_token.return_value = {
-            "email": "test@test.com",
-            "picture": "test-picture",
-            "uid": "test-uid",
-        }
+    def test_create_user_google_invalid_token(self):
         client = TestClient(auth_router)
         response = client.post(self.path, json.dumps({"access_token": "value"}))
         self.assertEqual(response.status_code, 400)

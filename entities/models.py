@@ -9,6 +9,8 @@ from users.models import User
 class Entity(StampedModel):
     name = models.CharField(max_length=128)
     slug = models.CharField(max_length=256, blank=True)
+    photo = models.CharField(max_length=256, blank=True)
+    icon = models.CharField(max_length=256, blank=True)
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
