@@ -87,6 +87,46 @@ class VerifyTokenTest(TestCase):
         self.assertContains(response, "userId")
 
 
+class SignupTest(TestCase):
+    path: str = "sign-up/"
+
+    class MockCreatedUser:
+        email = "test@test.com"
+        photo_url = "test-photo-url"
+        uid = "test-uid"
+
+    def test_sign_up_fail_1(self):
+        client = TestClient(auth_router)
+        response = client.post(self.path, json.dumps({"key": "value"}))
+
+        self.assertEqual(response.status_code, 422)
+        self.assertIn("detail", response.data)
+
+    @patch("auth.views.auth.create_user")
+    def test_sign_up_fail_2(self, mock_create_user):
+        mock_create_user.return_value = {"userId": 1}
+        client = TestClient(auth_router)
+        response = client.post(
+            self.path, json.dumps({"email": "test@test.com"})
+        )
+
+        self.assertEqual(response.status_code, 422)
+
+    @patch("auth.views.auth.create_user")
+    def test_sign_up_fail_3(self, mock_create_user):
+        mock_create_user.return_value = self.MockCreatedUser()
+
+        client = TestClient(auth_router)
+        response = client.post(
+            self.path,
+            json.dumps({"email": "test@test.com", "password": "testtest"}),
+        )
+        users = User.objects.all()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(users.count(), 1)
+        self.assertContains(response, "token")
+
+
 class GoogleSignupTest(TestCase):
     path: str = "google-sign-up/"
 

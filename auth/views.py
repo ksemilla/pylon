@@ -48,7 +48,7 @@ def verify_token_view(request, data: TokenResponseSchema):
     return res
 
 
-@auth_router.post("sign-up/", auth=None, response={201: TokenResponseSchema})
+@auth_router.post("sign-up/", auth=None, response={200: TokenResponseSchema})
 def sign_up_view(request, data: UserCreateSchema):
     try:
         firebase_user = auth.create_user(
