@@ -32,4 +32,4 @@ class AdminPermisison(BasePermission):
     message = "Only admins have permission"
 
     def has_permission(request, *args, **kwargs) -> bool:
-        return request.user.role != User.Roles.ADMIN
+        return request.user.role == User.Roles.ADMIN

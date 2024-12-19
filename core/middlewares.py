@@ -2,7 +2,6 @@ import threading
 import jwt
 from django.http import HttpRequest
 from django.conf import settings
-from django.utils.functional import SimpleLazyObject
 from users.models import User
 
 _user = threading.local()

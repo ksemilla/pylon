@@ -1,6 +1,7 @@
 from ninja.pagination import RouterPaginated
 from ninja.errors import HttpError
 from typing import List
+from django.db.models import Q
 
 from core.permissions import permissions, AdminPermisison
 
@@ -13,8 +14,12 @@ user_router = RouterPaginated()
 
 @user_router.get("", response=List[UserSchema])
 @permissions([AdminPermisison])
-def get_user_list(request):
-    return User.objects.all()
+def get_user_list(request, q: str = ""):
+    return User.objects.filter(
+        Q(first_name__icontains=q)
+        | Q(last_name__icontains=q)
+        | Q(email__icontains=q)
+    )
 
 
 @user_router.get("{user_id}/", response=UserSchema)
