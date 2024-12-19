@@ -10,7 +10,7 @@ from .views import auth_router
 class GoogleLoginTest(TestCase):
     path: str = "google-login/"
 
-    def test_login_google_fail_1(self):
+    def test_login_google_incorrect_data_input(self):
         client = TestClient(auth_router)
         response = client.post(
             self.path,
@@ -19,7 +19,7 @@ class GoogleLoginTest(TestCase):
         self.assertEqual(response.status_code, 422)
         self.assertIn("detail", response.data)
 
-    def test_login_google_fail_2(self):
+    def test_login_google_invalid_token(self):
         client = TestClient(auth_router)
         response = client.post(
             self.path,
@@ -29,7 +29,7 @@ class GoogleLoginTest(TestCase):
         self.assertIn("detail", response.data)
 
     @patch("auth.views.auth.verify_id_token")
-    def test_login_google_fail_3(self, mock_verify_token):
+    def test_login_google_not_existing_user(self, mock_verify_token):
         mock_verify_token.return_value = {
             "email": "test@test.com",
             "picture": "test-picture",
@@ -63,14 +63,14 @@ class GoogleLoginTest(TestCase):
 class VerifyTokenTest(TestCase):
     path: str = "verify/"
 
-    def test_verify_token_fail_1(self):
+    def test_verify_token_incorrect_data_input(self):
         client = TestClient(auth_router)
         response = client.post(self.path, json.dumps({"key": "value"}))
 
         self.assertEqual(response.status_code, 422)
         self.assertIn("detail", response.data)
 
-    def test_verify_token_fail_2(self):
+    def test_verify_token_invalid_token(self):
         client = TestClient(auth_router)
         response = client.post(self.path, json.dumps({"token": "value"}))
 
@@ -95,7 +95,7 @@ class SignupTest(TestCase):
         photo_url = "test-photo-url"
         uid = "test-uid"
 
-    def test_sign_up_fail_1(self):
+    def test_sign_up_incorrect_data_input(self):
         client = TestClient(auth_router)
         response = client.post(self.path, json.dumps({"key": "value"}))
 
@@ -103,7 +103,7 @@ class SignupTest(TestCase):
         self.assertIn("detail", response.data)
 
     @patch("auth.views.auth.create_user")
-    def test_sign_up_fail_2(self, mock_create_user):
+    def test_sign_up_missing_required_field(self, mock_create_user):
         mock_create_user.return_value = {"userId": 1}
         client = TestClient(auth_router)
         response = client.post(
@@ -113,7 +113,7 @@ class SignupTest(TestCase):
         self.assertEqual(response.status_code, 422)
 
     @patch("auth.views.auth.create_user")
-    def test_sign_up_fail_3(self, mock_create_user):
+    def test_sign_up_success(self, mock_create_user):
         mock_create_user.return_value = self.MockCreatedUser()
 
         client = TestClient(auth_router)
@@ -129,6 +129,34 @@ class SignupTest(TestCase):
 
 class GoogleSignupTest(TestCase):
     path: str = "google-sign-up/"
+
+    def test_create_user_google_incorrect_data_input(self):
+        client = TestClient(auth_router)
+        response = client.post(self.path, json.dumps({"key": "value"}))
+        self.assertEqual(response.status_code, 422)
+
+    @patch("auth.views.auth.verify_id_token")
+    def test_create_user_google_invalid_token(self, mock_verify_token):
+        mock_verify_token.return_value = {
+            "email": "test@test.com",
+            "picture": "test-picture",
+            "uid": "test-uid",
+        }
+        client = TestClient(auth_router)
+        response = client.post(self.path, json.dumps({"access_token": "value"}))
+        self.assertEqual(response.status_code, 400)
+
+    @patch("auth.views.auth.verify_id_token")
+    def test_create_user_google_user_exists(self, mock_verify_token):
+        User.objects.create(email="test@test.com")
+        mock_verify_token.return_value = {
+            "email": "test@test.com",
+            "picture": "test-picture",
+            "uid": "test-uid",
+        }
+        client = TestClient(auth_router)
+        response = client.post(self.path, json.dumps({"access_token": "value"}))
+        self.assertEqual(response.status_code, 400)
 
     @patch("auth.views.auth.verify_id_token")
     def test_create_user_google_success(self, mock_verify_token):

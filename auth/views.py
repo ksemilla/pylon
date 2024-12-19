@@ -71,7 +71,10 @@ def sign_up_view(request, data: UserCreateSchema):
     "google-sign-up/", auth=None, response={200: TokenResponseSchema}
 )
 def sign_up_view(request, data: UserCreateGoogleSchema):
-    firebase_user = auth.verify_id_token(data.access_token)
+    try:
+        firebase_user = auth.verify_id_token(data.access_token)
+    except InvalidIdTokenError:
+        raise HttpError(400, "Invalid google token")
 
     _user = User.objects.filter(email=firebase_user["email"]).first()
     if _user:
