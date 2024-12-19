@@ -17,3 +17,7 @@ class UserCreateGoogleSchema(Schema):
 class UserCreateSchema(Schema):
     email: str
     password: str
+
+
+class UserCreateByAdminSchema(Schema):
+    email: str

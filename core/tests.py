@@ -29,6 +29,9 @@ class AuthenticatedClient(TestClient):
     def get(self, path, data: Dict | None = None, **request_params: Any):
         return super().get(path, data, user=self.user, **request_params)
 
+    def post(self, path, data: Dict, **request_params: Any):
+        return super().post(path, data, user=self.user, **request_params)
+
 
 class AuthenticatedAdminClient(AuthenticatedClient):
     user = MockAdminUser()
