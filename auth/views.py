@@ -1,7 +1,10 @@
 from ninja import Router
 from ninja.errors import HttpError
 from firebase_admin import auth
-from firebase_admin._auth_utils import EmailAlreadyExistsError
+from firebase_admin._auth_utils import (
+    EmailAlreadyExistsError,
+    InvalidIdTokenError,
+)
 
 from users.schemas import UserCreateGoogleSchema, UserCreateSchema
 from users.models import User
@@ -14,7 +17,10 @@ auth_router = Router()
 
 @auth_router.post("google-login/", auth=None)
 def get_token_view(request, data: GetTokenSchema):
-    firebase_user = auth.verify_id_token(data.access_token)
+    try:
+        firebase_user = auth.verify_id_token(data.access_token)
+    except InvalidIdTokenError:
+        raise HttpError(400, "Invalid google token")
 
     try:
         user = User.objects.get(email=firebase_user["email"])
@@ -49,7 +55,7 @@ def sign_up_view(request, data: UserCreateSchema):
 
 
 @auth_router.post(
-    "google-sign-up/", auth=None, response={201: TokenResponseSchema}
+    "google-sign-up/", auth=None, response={200: TokenResponseSchema}
 )
 def sign_up_view(request, data: UserCreateGoogleSchema):
     firebase_user = auth.verify_id_token(data.access_token)
