@@ -7,15 +7,15 @@ from users.models import User
 
 
 class Entity(StampedModel):
-    name = models.CharField(max_length=128)
-    slug = models.CharField(max_length=256, blank=True)
-    photo = models.CharField(max_length=256, blank=True)
-    icon = models.CharField(max_length=256, blank=True)
+    name = models.CharField(max_length=128, unique=True)
+    slug = models.CharField(max_length=256, unique=True, null=True)
+    photo = models.FileField(upload_to="uploads/", blank=True, null=True)
+    icon = models.FileField(upload_to="uploads/", blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.slug = slugify(kwargs["name"])
+            self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
 

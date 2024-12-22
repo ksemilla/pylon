@@ -6,8 +6,8 @@ from core.middlewares import get_current_user
 
 # Create your models here.
 class StampedModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -26,8 +26,8 @@ class StampedModel(models.Model):
     def save(self, *args, **kwargs):
         current_user = get_current_user()
         if not self.pk:  # Object is being created
-            if not self.user:
-                raise ValueError("User must be set for new objects")
+            # if not self.created_by:
+            #     raise ValueError("User must be set for new objects")
             self.created_by = current_user
         else:  # Object is being updated
             self.updated_by = current_user
