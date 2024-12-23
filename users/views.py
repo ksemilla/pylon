@@ -6,7 +6,8 @@ from django.db.models import Q
 from core.permissions import permissions, AdminPermisison
 
 from .models import User
-from .schemas import UserSchema, UserCreateByAdminSchema
+from .schemas import UserModelSchema, UserSchema, UserCreateByAdminSchema
+from .permissions import AdminOrSelfPermission
 
 
 user_router = RouterPaginated()
@@ -25,6 +26,7 @@ def get_user_list(request, q: str = ""):
 @user_router.post("", response=UserSchema)
 @permissions([AdminPermisison])
 def create_user(request, data: UserCreateByAdminSchema):
+    data.username = data.email
     _user = User.objects.filter(email=data.email).first()
     if _user:
         raise HttpError(400, "Email already used")
@@ -32,9 +34,26 @@ def create_user(request, data: UserCreateByAdminSchema):
     return User.objects.create(**data.dict())
 
 
-@user_router.get("{user_id}/", response=UserSchema)
+@user_router.get("{user_id}/", response=UserModelSchema)
+@permissions([AdminOrSelfPermission])
 def get_user(request, user_id: int):
     try:
         return User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise HttpError(404, "User not found")
+
+
+@user_router.put("{user_id}/", response=UserModelSchema)
+@permissions([AdminPermisison])
+def edit_user(request, user_id: int, data: UserSchema):
+    try:
+        user = User.objects.get(pk=user_id)
+
+        for attr, value in data.dict(exclude_unset=True).items():
+            setattr(user, attr, value)
+
+        user.save()
+
+        return user
     except User.DoesNotExist:
         raise HttpError(404, "User not found")

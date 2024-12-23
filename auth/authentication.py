@@ -13,10 +13,4 @@ def verify_token(token):
 
 class CustomAuthentication(HttpBearer):
     def authenticate(self, request, token):
-        try:
-            jwt.decode(token, settings.SECRET_KEY, algorithms="HS256")
-            return True
-        except jwt.exceptions.DecodeError:
-            return False
-        except Exception:
-            return False
+        return request.user.is_authenticated

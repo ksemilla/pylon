@@ -2,6 +2,7 @@ import threading
 import jwt
 from django.http import HttpRequest
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from users.models import User
 
 _user = threading.local()
@@ -21,6 +22,8 @@ class CurrentUserMiddleware:
         if user:
             _user.value = user
             request.user = user
+        else:
+            request.user = AnonymousUser()
         response = self.get_response(request)
 
         _user.value = None  # Clean up after the response
