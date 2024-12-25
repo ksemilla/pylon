@@ -2,6 +2,8 @@ from ninja import Form, File, UploadedFile
 from ninja.pagination import RouterPaginated
 from typing import List
 
+from django.db.models import Q
+
 from core.permissions import permissions, AdminPermisison
 
 from .models import Entity
@@ -12,8 +14,8 @@ entity_router = RouterPaginated()
 
 @entity_router.get("", response=List[EntitySchema])
 @permissions([AdminPermisison])
-def entity_list_view(request):
-    return Entity.objects.all()
+def entity_list_view(request, q: str = ""):
+    return Entity.objects.filter(Q(name__icontains=q) | Q(slug__icontains=q))
 
 
 @entity_router.post("", response=EntitySchema)
