@@ -24,6 +24,7 @@ class UserSchema(Schema):
     first_name: Optional[str]
     last_name: Optional[str]
     role: UserRole = UserRole.USER
+    is_active: bool
 
 
 class UserCreateGoogleSchema(Schema):
