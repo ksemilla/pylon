@@ -35,23 +35,19 @@ class StampedModel(models.Model):
 
     class Meta:
         abstract = True
-        indexes = [
-            # Index for the year extracted from `created_at`
-            models.Index(
-                ExtractYear("created_at"),
-                fields=[],
-                name="idx_created_year",
-            ),
-            # Index for the month extracted from `created_at`
-            models.Index(
-                ExtractMonth("created_at"),
-                fields=[],
-                name="idx_created_month",
-            ),
-            # Index for the day extracted from `created_at`
-            models.Index(
-                ExtractDay("created_at"),
-                fields=[],
-                name="idx_created_day",
-            ),
-        ]
+
+
+def generate_datetime_indexes(model_name):
+    return [
+        models.Index(
+            ExtractYear("created_at"), fields=[], name=f"{model_name}_year_idx"
+        ),
+        models.Index(
+            ExtractMonth("created_at"),
+            fields=[],
+            name=f"{model_name}_month_idx",
+        ),
+        models.Index(
+            ExtractDay("created_at"), fields=[], name=f"{model_name}_day_idx"
+        ),
+    ]

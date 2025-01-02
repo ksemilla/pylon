@@ -22,8 +22,8 @@ class CurrentUserMiddleware:
         if user:
             _user.value = user
             request.user = user
-        else:
-            request.user = AnonymousUser()
+        # else:
+        #     request.user = AnonymousUser()
         response = self.get_response(request)
 
         _user.value = None  # Clean up after the response
