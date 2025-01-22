@@ -26,4 +26,4 @@ class UserMemberSchema(ModelSchema):
 
     class Meta:
         model = Member
-        fields = ["id", "role"]
+        fields = ["id", "role", "permissions"]
