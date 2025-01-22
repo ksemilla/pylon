@@ -1,6 +1,9 @@
-from ninja import ModelSchema, Schema
+from ninja import ModelSchema, Schema, Field
 from typing import Optional
 from enum import Enum
+from typing import List
+
+from entities.schemas import UserMemberSchema
 
 from .models import User
 
@@ -12,6 +15,8 @@ class UserRole(str, Enum):
 
 
 class UserModelSchema(ModelSchema):
+    members: List[UserMemberSchema] = Field(..., alias="member_set")
+
     class Meta:
         model = User
         fields = "__all__"

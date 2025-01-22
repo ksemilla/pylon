@@ -2,6 +2,7 @@ from ninja import Form, File, UploadedFile
 from ninja.pagination import RouterPaginated
 from ninja.errors import HttpError
 from typing import List
+from slugify import slugify
 
 from django.db.models import Q
 
@@ -21,13 +22,12 @@ def entity_list_view(request, q: str = ""):
 
 @entity_router.post("", response=EntitySchema)
 @permissions([AdminPermisison])
-def entity_create_view(
-    request,
-    data: Form[EntityCreateSchema],
-    photo: File[UploadedFile] = None,
-    icon: File[UploadedFile] = None,
-):
-    return Entity.objects.create(**data.dict(), photo=photo, icon=icon)
+def entity_create_view(request, data: EntityCreateSchema):
+    slug = slugify(data.name)
+    _entity = Entity.objects.filter(slug=slug).first()
+    if _entity:
+        raise HttpError(400, "Cannot create entity - already used slug")
+    return Entity.objects.create(**data.dict())
 
 
 @entity_router.get("{entity_id}/", response=EntitySchema)

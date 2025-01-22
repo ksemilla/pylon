@@ -17,9 +17,7 @@ user_router = RouterPaginated()
 @permissions([AdminPermisison])
 def get_user_list(request, q: str = ""):
     return User.objects.filter(
-        Q(first_name__icontains=q)
-        | Q(last_name__icontains=q)
-        | Q(email__icontains=q)
+        Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(email__icontains=q)
     )
 
 

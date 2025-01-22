@@ -1,10 +1,10 @@
-from ninja import ModelSchema, Schema
+from ninja import ModelSchema, Schema, Field
 from pydantic import (
     field_serializer,
 )
 
 from django.conf import settings
-from .models import Entity
+from .models import Entity, Member
 
 
 class EntitySchema(ModelSchema):
@@ -19,3 +19,11 @@ class EntitySchema(ModelSchema):
 
 class EntityCreateSchema(Schema):
     name: str
+
+
+class UserMemberSchema(ModelSchema):
+    entity: EntitySchema = Field(..., alias="entity")
+
+    class Meta:
+        model = Member
+        fields = ["id", "role"]
