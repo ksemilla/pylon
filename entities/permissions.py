@@ -11,5 +11,4 @@ class AdminOrMemberPermission(BasePermission):
             return True
         except:
             pass
-
         return False
