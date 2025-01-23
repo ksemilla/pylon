@@ -8,8 +8,8 @@ from django.db.models import Q
 
 from core.permissions import permissions, AdminPermisison
 
-from .models import Entity
-from .schemas import EntitySchema, EntityCreateSchema
+from .models import Entity, Member
+from .schemas import EntitySchema, EntityCreateSchema, MemberSchema
 from .permissions import AdminOrMemberPermission
 
 entity_router = RouterPaginated()
@@ -38,3 +38,8 @@ def get_entity(request, entity_id: int):
         return Entity.objects.get(id=entity_id)
     except Entity.DoesNotExist:
         return HttpError(404, "Entity not found")
+
+
+@entity_router.get("{entity_id}/members/", response=List[MemberSchema])
+def get_members(request, entity_id: int):
+    return Member.objects.filter(entity__id=entity_id)

@@ -12,3 +12,8 @@ VENDORS_VIEW = "vendors.view"
 VENDORS_CREATE = "vendors.create"
 VENDORS_UPDATE = "vendors.update"
 VENDORS_DELETE = "vendors.delete"
+
+MEMBERS_VIEW = "members.view"
+MEMBERS_CREATE = "members.create"
+MEMBERS_UPDATE = "members.update"
+MEMBERS_DELETE = "members.delete"

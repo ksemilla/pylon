@@ -14,6 +14,12 @@ class EntityCreateSchema(Schema):
     name: str
 
 
+class MemberSchema(ModelSchema):
+    class Meta:
+        model = Member
+        fields = "__all__"
+
+
 class UserMemberSchema(ModelSchema):
     entity: EntitySchema = Field(..., alias="entity")
 
