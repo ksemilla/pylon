@@ -10,6 +10,7 @@ from core.permissions import permissions, AdminPermisison
 
 from .models import Entity
 from .schemas import EntitySchema, EntityCreateSchema
+from .permissions import AdminOrMemberPermission
 
 entity_router = RouterPaginated()
 
@@ -31,7 +32,7 @@ def entity_create_view(request, data: EntityCreateSchema):
 
 
 @entity_router.get("{entity_id}/", response=EntitySchema)
-@permissions([AdminPermisison])
+@permissions([AdminOrMemberPermission])
 def get_entity(request, entity_id: int):
     try:
         return Entity.objects.get(id=entity_id)
