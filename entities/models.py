@@ -41,3 +41,5 @@ class Member(models.Model):
     entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=64, choices=Roles, default=Roles.USER)
+    permissions = models.JSONField(default=list, null=True, blank=True)
+    default = models.BooleanField(default=False)

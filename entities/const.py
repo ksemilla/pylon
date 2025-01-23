@@ -1,19 +1,14 @@
-from typing import List
+QUOTATIONS_VIEW = "quotations.view"
+QUOTATIONS_CREATE = "quotations.create"
+QUOTATIONS_UPDATE = "quotations.update"
+QUOTATIONS_DELETE = "quotations.delete"
 
-MEMBER_PERMISSIONS: List[str] = [
-    "quotations.view",
-    "quotations.create",
-    "quotations.update",
-    "quotations.delete",
-    "items.view",
-    "items.create",
-    "items.update",
-    "items.delete" "vendors.view",
-    "vendors.create",
-    "vendors.update",
-    "vendors.delete",
-    "members.view",
-    "members.create",
-    "members.update",
-    "members.delete",
-]
+ITEMS_VIEW = "items.view"
+ITEMS_CREATE = "items.create"
+ITEMS_UPDATE = "items.update"
+ITEMS_DELETE = "items.delete"
+
+VENDORS_VIEW = "vendors.view"
+VENDORS_CREATE = "vendors.create"
+VENDORS_UPDATE = "vendors.update"
+VENDORS_DELETE = "vendors.delete"
