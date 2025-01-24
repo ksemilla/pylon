@@ -41,5 +41,7 @@ def get_entity(request, entity_id: int):
 
 
 @entity_router.get("{entity_id}/members/", response=List[MemberSchema])
-def get_members(request, entity_id: int):
-    return Member.objects.filter(entity__id=entity_id)
+def get_members(request, entity_id: int, q: str = ""):
+    return Member.objects.filter(
+        (Q(entity__id=entity_id) & Q(user__email__icontains=q))
+    )
