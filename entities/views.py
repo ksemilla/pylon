@@ -1,4 +1,3 @@
-from ninja import Form, File, UploadedFile
 from ninja.pagination import RouterPaginated
 from ninja.errors import HttpError
 from typing import List
@@ -7,9 +6,10 @@ from slugify import slugify
 from django.db.models import Q
 
 from core.permissions import permissions, AdminPermisison
+from users.models import User
 
 from .models import Entity, Member
-from .schemas import EntitySchema, EntityCreateSchema, MemberSchema
+from .schemas import EntitySchema, EntityCreateSchema, MemberSchema, MemberCreateSchema
 from .permissions import AdminOrMemberPermission
 
 entity_router = RouterPaginated()
@@ -45,3 +45,19 @@ def get_members(request, entity_id: int, q: str = ""):
     return Member.objects.filter(
         (Q(entity__id=entity_id) & Q(user__email__icontains=q))
     )
+
+
+@entity_router.post("{entity_id}/members/", response=MemberSchema)
+def create_member(request, entity_id: int, data: MemberCreateSchema):
+
+    try:
+        user = User.objects.get(email=data.email)
+        Member.objects.get(entity__id=entity_id, user__id=user.id)
+        raise HttpError(400, "Member already exists")
+    except User.DoesNotExist:
+        raise HttpError(400, "[DEMO] Email not found")
+    except Member.DoesNotExist:
+        user = User.objects.get(email=data.email)
+        entity = Entity.objects.get(id=entity_id)
+
+    return Member.objects.create(role=data.role, entity=entity, user=user)

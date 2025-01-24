@@ -1,9 +1,14 @@
 from ninja import ModelSchema, Schema, Field
-
+from enum import Enum
 
 from users.models import User
 
 from .models import Entity, Member
+
+
+class MemberRole(str, Enum):
+    USER = "user"
+    ADMIN = "admin"
 
 
 class MemberUserSchema(ModelSchema):
@@ -28,3 +33,8 @@ class MemberSchema(ModelSchema):
     class Meta:
         model = Member
         fields = "__all__"
+
+
+class MemberCreateSchema(Schema):
+    email: str
+    role: MemberRole = MemberRole.USER
