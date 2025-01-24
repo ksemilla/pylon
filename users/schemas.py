@@ -3,9 +3,19 @@ from typing import Optional
 from enum import Enum
 from typing import List
 
-from entities.schemas import UserMemberSchema
+from entities.schemas import EntitySchema
+from entities.models import Member
 
 from .models import User
+
+
+class UserMemberSchema(ModelSchema):
+    entity: EntitySchema = Field(..., alias="entity")
+    user: "UserSchema" = Field(..., alias="user")
+
+    class Meta:
+        model = Member
+        fields = ["id", "role", "permissions", "default"]
 
 
 class UserRole(str, Enum):

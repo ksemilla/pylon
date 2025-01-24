@@ -43,3 +43,6 @@ class Member(models.Model):
     role = models.CharField(max_length=64, choices=Roles, default=Roles.USER)
     permissions = models.JSONField(default=list, null=True, blank=True)
     default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.entity.name}"

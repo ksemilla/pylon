@@ -1,7 +1,15 @@
 from ninja import ModelSchema, Schema, Field
 
-from django.conf import settings
+
+from users.models import User
+
 from .models import Entity, Member
+
+
+class MemberUserSchema(ModelSchema):
+    class Meta:
+        model = User
+        fields = ["id", "email"]
 
 
 class EntitySchema(ModelSchema):
@@ -15,14 +23,8 @@ class EntityCreateSchema(Schema):
 
 
 class MemberSchema(ModelSchema):
+    user: MemberUserSchema = Field(..., alias="user")
+
     class Meta:
         model = Member
         fields = "__all__"
-
-
-class UserMemberSchema(ModelSchema):
-    entity: EntitySchema = Field(..., alias="entity")
-
-    class Meta:
-        model = Member
-        fields = ["id", "role", "permissions", "default"]
