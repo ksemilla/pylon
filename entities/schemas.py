@@ -1,5 +1,6 @@
 from ninja import ModelSchema, Schema, Field
 from enum import Enum
+from typing import Optional
 
 from users.models import User
 
@@ -38,3 +39,8 @@ class MemberSchema(ModelSchema):
 class MemberCreateSchema(Schema):
     email: str
     role: MemberRole = MemberRole.USER
+
+
+class MemberEditSchema(Schema):
+    role: Optional[MemberRole] = MemberRole.USER
+    is_active: Optional[bool]
