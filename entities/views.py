@@ -9,7 +9,13 @@ from core.permissions import permissions, AdminPermisison
 from users.models import User
 
 from .models import Entity, Member
-from .schemas import EntitySchema, EntityCreateSchema, MemberSchema, MemberCreateSchema
+from .schemas import (
+    EntitySchema,
+    EntityCreateSchema,
+    MemberSchema,
+    MemberCreateSchema,
+    MemberEditSchema,
+)
 from .permissions import AdminOrMemberPermission
 
 entity_router = RouterPaginated()
@@ -61,3 +67,24 @@ def create_member(request, entity_id: int, data: MemberCreateSchema):
         entity = Entity.objects.get(id=entity_id)
 
     return Member.objects.create(role=data.role, entity=entity, user=user)
+
+
+@entity_router.get("{entity_id}/members/{member_id}/", response=MemberSchema)
+def create_member(request, entity_id: int, member_id: int):
+    try:
+        return Member.objects.get(id=member_id, entity__id=entity_id)
+    except Member.DoesNotExist:
+        return HttpError(404, "Member not found")
+
+
+@entity_router.put("{entity_id}/members/{member_id}/", response=str)
+def create_member(request, entity_id: int, member_id: int, data: MemberEditSchema):
+    try:
+        member = Member.objects.get(id=member_id, entity__id=entity_id)
+        for attr, value in data.dict(exclude_unset=True).items():
+            setattr(member, attr, value)
+
+        member.save()
+        return ""
+    except Member.DoesNotExist:
+        return HttpError(404, "Member not found")
