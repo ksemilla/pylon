@@ -42,5 +42,5 @@ class MemberCreateSchema(Schema):
 
 
 class MemberEditSchema(Schema):
-    role: Optional[MemberRole] = MemberRole.USER
-    is_active: Optional[bool]
+    role: Optional[MemberRole] = None
+    is_active: Optional[bool] = None
